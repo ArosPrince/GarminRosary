@@ -6,8 +6,10 @@ Not published to the Connect IQ Store (see the name/icon note in README.md).
 ## What differs from upstream
 
 - **Czech regardless of the watch language.** `monkey.jungle` appends `resources-ces` (and the
-  fork strings) to the default and to every translated resource path; later paths win, so all
-  mysteries, prayers and menus are Czech even on an English watch. No upstream string file is edited.
+  fork strings) to the default resource path; later paths win, so all mysteries, prayers and menus
+  are Czech even on an English watch. No upstream string file is edited. The manifest lists Czech
+  as the only language, so the store shows Czech, and device variants without Czech firmware
+  (Asia-Pacific editions) are not built.
 - **Full texts of the long prayers.** Věřím v Boha, Zdrávas Královno and Modleme se open
   automatically as a paged text (`source/fork/PrayerTextView.mc`). DOWN / swipe up = next page,
   UP / swipe down = previous page, START / tap = continue with the next prayer, BACK = close only
@@ -61,4 +63,4 @@ Expected conflicts:
   take upstream's version.
 - If upstream commits the real `DeviceProfile` / `Palette` / `RosaryConstants`, the build reports
   duplicate definitions: delete `source/fork/UpstreamShims.mc`.
-- If upstream adds a new language folder, add it to `monkey.jungle` like the others.
+- `manifest.xml` language list: keep `ces` only.

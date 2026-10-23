@@ -1,13 +1,8 @@
 project.manifest = manifest.xml
 
 # FORK: Czech texts regardless of the watch language. Later paths override earlier
-# ones, so the Czech translation replaces the English defaults (and the other
-# translations), and the fork's own strings (full prayer texts) come last.
+# ones, so the Czech translation replaces the English defaults, and the fork's own
+# strings (full prayer texts) come last. The manifest lists Czech only, so the other
+# upstream translations are not built (the compiler warns that they are ignored).
 base.resourcePath = $(base.resourcePath);resources-ces;resources-fork
 base.lang.ces = $(base.lang.ces);resources-fork
-base.lang.deu = $(base.lang.deu);resources-ces;resources-fork
-base.lang.fre = $(base.lang.fre);resources-ces;resources-fork
-base.lang.ita = $(base.lang.ita);resources-ces;resources-fork
-base.lang.pol = $(base.lang.pol);resources-ces;resources-fork
-base.lang.por = $(base.lang.por);resources-ces;resources-fork
-base.lang.spa = $(base.lang.spa);resources-ces;resources-fork
