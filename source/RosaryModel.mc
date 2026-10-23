@@ -20,7 +20,8 @@ class RosaryModel {
         STATE_GLORY,           // Gloria (fin de dizaine)
         STATE_MYSTERY_TRANSITION, // Écran de transition entre mystères (Full Rosary)
         STATE_SALVE,           // Salve Regina (fin)
-        STATE_COMPLETE         // Chapelet terminé
+        STATE_COMPLETE,        // Chapelet terminé
+        STATE_ORATIO           // FORK: Modleme se (closing prayer after the Salve Regina)
     }
 
     //! Types de mystères
@@ -46,7 +47,8 @@ class RosaryModel {
     const INTRO_BEADS = 6;          
     const DECADE_BEADS = 12;        
     const TOTAL_DECADES = 5;
-    const TOTAL_ROSARY_BEADS = 68;  
+    const CLOSING_BEADS = 2;        // FORK: Salve Regina + Modleme se
+    const TOTAL_ROSARY_BEADS = 68 + CLOSING_BEADS;
     const TOTAL_FULL_ROSARY_MYSTERIES = 4;
 
     var mysteryTitles as Dictionary or Null = null;
@@ -185,15 +187,18 @@ class RosaryModel {
                         } 
                     }
                     
+                    // FORK: Salve Regina, then Modleme se, before completing
                     phase = 6;
-                    isComplete = true;
-                    return STATE_COMPLETE;
+                    return STATE_SALVE;
                 }
                 return STATE_OUR_FATHER;
             }
         }
 
         if (phase == 6) {
+            if (beadInPhase == 2) {
+                return STATE_ORATIO;
+            }
             isComplete = true;
             return STATE_COMPLETE;
         }
@@ -341,6 +346,8 @@ class RosaryModel {
         }
 
         if (phase == 6) {
+            if (beadInPhase == 1) { return STATE_SALVE; }
+            if (beadInPhase == 2) { return STATE_ORATIO; }
             return STATE_GLORY;
         }
 
@@ -357,7 +364,7 @@ class RosaryModel {
     function getProgress() as Float {
         var totalExpected = TOTAL_ROSARY_BEADS;
         if (isFullRosary) {
-            totalExpected = 7 + (TOTAL_FULL_ROSARY_MYSTERIES * 5 * 12);
+            totalExpected = 7 + (TOTAL_FULL_ROSARY_MYSTERIES * 5 * 12) + CLOSING_BEADS;
         }
         return totalBeads.toFloat() / totalExpected.toFloat();
     }

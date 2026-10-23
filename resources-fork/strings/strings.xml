@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    FORK: strings added by the Czech fork. Loaded after resources-ces (see monkey.jungle),
+    so ids defined here also override the Czech translation.
+
+    Prayer texts: https://www.pastorace.cz/tematicke-texty/modlitba-ruzence-krok-za-krokem
+    One line = one phrase; the text view keeps these line breaks and wraps long lines.
+-->
+<strings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <string id="prayer_oratio">Modleme se</string>
+
+    <string id="prayer_creed_text">Věřím v Boha,
+Otce všemohoucího,
+Stvořitele nebe i země.
+I v Ježíše Krista,
+Syna jeho Jediného,
+Pána našeho;
+jenž se počal z Ducha svatého,
+narodil se z Marie Panny,
+trpěl pod Ponciem Pilátem,
+ukřižován umřel i pohřben jest;
+sestoupil do pekel,
+třetího dne vstal z mrtvých;
+vstoupil na nebesa,
+sedí po pravici Boha,
+Otce všemohoucího;
+odtud přijde soudit živé i mrtvé.
+Věřím v Ducha Svatého,
+svatou církev obecnou,
+společenství svatých,
+odpuštění hříchů,
+vzkříšení těla
+a život věčný.
+Amen.</string>
+
+    <string id="prayer_salve_text">Zdrávas Královno, matko milosrdenství,
+živote, sladkosti a naděje naše, buď zdráva!
+K tobě voláme, vyhnaní synové Evy,
+k tobě vzdycháme, lkajíce a plačíce
+v tomto slzavém údolí.
+A proto, orodovnice naše,
+obrať k nám své milosrdné oči
+a Ježíše, požehnaný plod života svého,
+nám po tomto putování ukaž,
+ó milostivá,
+ó přívětivá,
+ó přesladká, Panno Maria!
+Oroduj za nás, královno posvátného růžence,
+aby nám Kristus dal účast na svých zaslíbeních.</string>
+
+    <string id="prayer_oratio_text">Bože, tvůj jednorozený Syn nám svým životem, smrtí a zmrtvýchvstáním získal věčnou spásu.
+Dej nám, prosíme, když v posvátném růženci blahoslavené Panny Marie o těchto tajemstvích rozjímáme, ať také podle nich žijeme a dosáhneme toho, co slibují.
+Skrze Krista, našeho Pána.
+Amen.</string>
+
+    <string id="hint_continue">Klepnutím dál</string>
+</strings>

@@ -154,13 +154,13 @@ class GarminRosaryView extends WatchUi.View {
         dc.setPenWidth(3);
         
         var markers = [] as Array<Number>;
-        var total = 68.0; 
-        
+        var total = _model.TOTAL_ROSARY_BEADS.toFloat(); // FORK: includes Salve Regina + Modleme se
+
         if (_model.isFullRosary) {
             total = 187.0;
             markers = [7, 67, 127];
         } else {
-            markers = [7, 19, 31, 43, 55];
+            markers = [7, 19, 31, 43, 55, 67];
         }
         
         for (var i = 0; i < markers.size(); i++) {
@@ -505,6 +505,7 @@ class GarminRosaryView extends WatchUi.View {
             case RosaryModel.STATE_INTRO_GLORY:
             case RosaryModel.STATE_GLORY: return WatchUi.loadResource(Rez.Strings.prayer_gloria) as String;
             case RosaryModel.STATE_SALVE: return WatchUi.loadResource(Rez.Strings.prayer_salve) as String;
+            case RosaryModel.STATE_ORATIO: return WatchUi.loadResource(Rez.Strings.prayer_oratio) as String;
             default: return "";
         }
     }

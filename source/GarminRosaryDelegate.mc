@@ -96,6 +96,13 @@ class GarminRosaryDelegate extends WatchUi.BehaviorDelegate {
 
     //! Ouvre la vue de méditation
     private function openMeditationView() as Void {
+        // FORK: full text for Věřím / Zdrávas Královno / Modleme se
+        var state = _model.getCurrentState();
+        if (PrayerTextView.getTextId(state) != null) {
+            openPrayerText(state);
+            return;
+        }
+
         if (_model.phase < 1 || _model.phase > 5) {
             return;
         }
@@ -105,8 +112,15 @@ class GarminRosaryDelegate extends WatchUi.BehaviorDelegate {
         WatchUi.pushView(meditationView, meditationDelegate, WatchUi.SLIDE_LEFT);
     }
 
+    //! FORK: opens the full text of the prayer
+    private function openPrayerText(state as Number) as Void {
+        var view = new PrayerTextView(state);
+        WatchUi.pushView(view, new PrayerTextDelegate(view, method(:advanceBead)), WatchUi.SLIDE_UP);
+    }
+
     //! Avance d'un grain avec vibration appropriée
-    private function advanceBead() as Void {
+    //! FORK: public, called back by PrayerTextDelegate
+    function advanceBead() as Void {
         var previousPhase = _model.phase;
         
         var state = _model.next();
@@ -116,7 +130,12 @@ class GarminRosaryDelegate extends WatchUi.BehaviorDelegate {
         triggerVibration(state);
         
         _model.saveState();
-        
+
+        // FORK: the long prayers are shown in full
+        if (PrayerTextView.getTextId(state) != null) {
+            openPrayerText(state);
+        }
+
         if (_model.isAutoMeditationEnabled()) {
             var currentPhase = _model.phase;
             if (currentPhase >= 1 && currentPhase <= 5 && _model.beadInPhase == 1 && 
@@ -172,12 +191,13 @@ class GarminRosaryDelegate extends WatchUi.BehaviorDelegate {
             // Vibration spéciale pour le début
             case RosaryModel.STATE_CROSS:
             case RosaryModel.STATE_CREED:
+            case RosaryModel.STATE_SALVE:  // FORK: the victory pattern is kept for the very end
+            case RosaryModel.STATE_ORATIO:
                 vibeData = [new Attention.VibeProfile(30, 100)];
                 break;
 
             // Vibration de victoire pour la fin
             case RosaryModel.STATE_COMPLETE:
-            case RosaryModel.STATE_SALVE:
                 vibeData = [
                     new Attention.VibeProfile(50, 200),
                     new Attention.VibeProfile(0, 150),
