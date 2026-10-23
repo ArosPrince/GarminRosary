@@ -1,7 +1,9 @@
 # Czech fork of GarminRosary
 
-Personal, sideloaded fork of [DevMc120/GarminRosary](https://github.com/DevMc120/GarminRosary).
-Not published to the Connect IQ Store (see the name/icon note in README.md).
+Fork of [DevMc120/GarminRosary](https://github.com/DevMc120/GarminRosary), published as
+**Růženec** in the Connect IQ Store:
+https://apps.garmin.com/en-US/apps/c7a5d79f-b3ab-45fb-a62e-5e59af395d9c
+(own name, icon and app id, as README.md asks of published forks).
 
 ## What differs from upstream
 

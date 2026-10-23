@@ -2,6 +2,8 @@
 
 Texts and settings for the store submission (apps.garmin.com, developer dashboard).
 
+Listing: https://apps.garmin.com/en-US/apps/c7a5d79f-b3ab-45fb-a62e-5e59af395d9c
+
 - App type: Device App (watch app), package `bin/Ruzenec.iq`
 - Category: Beliefs (id 257, the same as upstream and most rosary apps)
 - Price: free
