@@ -1,6 +1,12 @@
 # Connect IQ Store listing
 
-Draft texts for the store submission. App type: watch app. Suggested category: Lifestyle / Health & Wellness (whichever the portal offers for prayer apps).
+Texts and settings for the store submission (apps.garmin.com, developer dashboard).
+
+- App type: Device App (watch app), package `bin/Ruzenec.iq`
+- Category: Beliefs (id 257, the same as upstream and most rosary apps)
+- Price: free
+- Permissions: none
+- Website / source: https://github.com/ArosPrince/GarminRosary
 
 ## Název / Name
 
@@ -43,4 +49,5 @@ Based on the open-source GarminRosary project by DevMc120, licensed under GPL-3.
 
 - App icon: `store/icon-500.png`
 - On-device store icons (optional): `store/icon-128.png` (OLED), `store/icon-128-lowcolor.png` (MIP)
-- Screenshots: `store/screenshots/`
+- Screenshots: `store/screenshots/` (280x280, Fenix 7X)
+- Hero image (optional): `store/hero-1440x720.png`, no text so it serves every language
