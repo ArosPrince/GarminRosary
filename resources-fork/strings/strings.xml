@@ -54,4 +54,20 @@ Skrze Krista, našeho Pána.
 Amen.</string>
 
     <string id="hint_continue">Klepnutím dál</string>
+
+    <!-- Same as upstream's Czech help, plus the swipe-left gesture -->
+    <string id="help_text">OVLÁDÁNÍ
+
+[TLAČÍTKA]
+Potvrdit: Další modlitba
+Podržet: Číst text
+Nahoru/Dolů: Navigace
+Menu: Možnosti
+Zpět: Konec a uložit
+
+[DOTYK]
+Klepnout: Další modlitba
+Přejet nahoru: Číst text
+Přejet dolů: Předchozí
+Přejet doleva: Přeskočit na další Otče náš</string>
 </strings>

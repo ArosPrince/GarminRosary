@@ -206,6 +206,33 @@ class RosaryModel {
         return STATE_HAIL_MARY;
     }
 
+    //! FORK: skips the rest of the current decade (or the introduction) and stops at the
+    //! next Our Father, e.g. when the Hail Marys are counted by other means. Stops early at
+    //! the Salve Regina, the closing prayer, a mystery transition (full rosary) and the end.
+    //! Built on next(), so progress and the saved state stay consistent.
+    function skipToNextOurFather() as Number {
+        if (isComplete) {
+            return next(); // restarts, like a normal step
+        }
+
+        var state = next();
+        var guard = 0;
+        while (guard < DECADE_BEADS + INTRO_BEADS) {
+            switch (state) {
+                case STATE_OUR_FATHER:
+                case STATE_INTRO_OUR_FATHER:
+                case STATE_MYSTERY_TRANSITION:
+                case STATE_SALVE:
+                case STATE_ORATIO:
+                case STATE_COMPLETE:
+                    return state;
+            }
+            state = next();
+            guard++;
+        }
+        return state;
+    }
+
     function previous() as Void {
         if (pendingMysteryTransition) {
             pendingMysteryTransition = false;

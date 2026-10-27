@@ -1,17 +1,28 @@
+import Toybox.Attention;
 import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.Math;
 import Toybox.System;
+import Toybox.Timer;
 import Toybox.WatchUi;
 
 //! FORK: full text of the long prayers (Věřím v Boha, Zdrávas Královno, Modleme se),
 //! shown page by page. Opened automatically when the rosary reaches such a prayer.
 //! Tap / START continues with the next prayer, BACK only closes the text.
+//! The backlight is kept on while the text is shown, so it can be read to the end in the dark.
 class PrayerTextView extends WatchUi.View {
 
     private const TITLE_FONT = Graphics.FONT_TINY;
     private const BODY_FONT = Graphics.FONT_XTINY;
     private const HINT_FONT = Graphics.FONT_XTINY;
+
+    //! A last page with at most this many lines is a stub: the layout is tightened to avoid it.
+    private const STUB_LINES = 2;
+
+    //! The display is re-lit this often; devices time the backlight out by themselves
+    private const BACKLIGHT_REFRESH_MS = 2000;
+    //! ... and for at most this long, so a forgotten text view does not drain the battery
+    private const BACKLIGHT_MAX_MS = 180000;
 
     private var _title as String;
     private var _text as String;
@@ -21,11 +32,15 @@ class PrayerTextView extends WatchUi.View {
     private var _lineHeight as Number = 20;
 
     private var _titleY as Number = 0;
+    private var _titleBottom as Number = 0;
     private var _bodyTop as Number = 0;
     private var _hintY as Number = 0;
 
     private var _colorGold as Number = 0xFFD700;
     private var _colorTextDim as Number = 0xAAAAAA;
+
+    private var _backlightTimer as Timer.Timer? = null;
+    private var _backlightElapsedMs as Number = 0;
 
     //! Resource of the full text for a rosary state, null when the state has none.
     static function getTextId(state as Number) as ResourceId? {
@@ -62,36 +77,103 @@ class PrayerTextView extends WatchUi.View {
             _colorTextDim = Graphics.COLOR_WHITE;
         }
 
-        _lineHeight = dc.getFontHeight(BODY_FONT);
         _titleY = isRound ? (height * 0.07).toNumber() : 4;
-        _bodyTop = _titleY + dc.getFontHeight(TITLE_FONT) + 8;
+        _titleBottom = _titleY + dc.getFontHeight(TITLE_FONT);
         _hintY = height - (isRound ? (height * 0.05).toNumber() : 2) - dc.getFontHeight(HINT_FONT);
 
-        var rows = (_hintY - 2 - _bodyTop) / _lineHeight;
+        // Settings tried in order: [line spacing reduction (px), row width factor, gap under the title (px)].
+        // The first one is the comfortable layout; the others are used only when it leaves a stub
+        // of one or two lines on the last page, which would cost a whole extra scroll.
+        var attempts = [[0, 0.92, 8], [0, 0.97, 8], [2, 0.97, 6], [3, 0.97, 6]];
+        var bodyHeight = dc.getFontHeight(BODY_FONT);
+
+        var best = layoutPages(dc, bodyHeight, isRound, attempts[0]);
+        var bestPages = best[:pages] as Array<Array<String> >;
+        if (bestPages.size() > 1 && bestPages[bestPages.size() - 1].size() <= STUB_LINES) {
+            for (var i = 1; i < attempts.size(); i++) {
+                var candidate = layoutPages(dc, bodyHeight, isRound, attempts[i]);
+                if ((candidate[:pages] as Array).size() < bestPages.size()) {
+                    best = candidate;
+                    break;
+                }
+            }
+        }
+
+        _pages = best[:pages] as Array<Array<String> >;
+        _lineHeight = best[:lineHeight] as Number;
+        _bodyTop = best[:bodyTop] as Number;
+        if (_page >= _pages.size()) {
+            _page = 0;
+        }
+    }
+
+    //! Pages of text for the given settings, with the line height and top of the text they imply:
+    //! {:pages, :lineHeight, :bodyTop}.
+    private function layoutPages(dc as Dc, fontHeight as Number, isRound as Boolean, attempt as Array<Number or Float>) as Dictionary {
+        var tighten = attempt[0] as Number;
+        var widthFactor = attempt[1] as Float;
+        var gap = attempt[2] as Number;
+
+        var lineHeight = fontHeight - tighten;
+        var bodyTop = _titleBottom + gap;
+        var rows = (_hintY - 2 - bodyTop) / lineHeight;
         if (rows < 1) {
             rows = 1;
         }
 
         // Width of each row: on a round screen, the chord at the row's edge farthest from the center
-        var rowWidths = [] as Array<Number>;
+        var width = dc.getWidth();
         var radius = width / 2.0;
-        var centerY = height / 2;
+        var centerY = dc.getHeight() / 2;
+        var rowWidths = [] as Array<Number>;
         for (var r = 0; r < rows; r++) {
-            var rowWidth = width * 0.92;
+            var rowWidth = width * widthFactor;
             if (isRound) {
-                var dy = (_bodyTop + r * _lineHeight - centerY).abs();
-                var dyBottom = (_bodyTop + (r + 1) * _lineHeight - centerY).abs();
+                var dy = (bodyTop + r * lineHeight - centerY).abs();
+                var dyBottom = (bodyTop + (r + 1) * lineHeight - centerY).abs();
                 if (dyBottom > dy) {
                     dy = dyBottom;
                 }
-                rowWidth = (dy < radius) ? 2 * Math.sqrt(radius * radius - dy * dy) * 0.92 : width * 0.5;
+                rowWidth = (dy < radius) ? 2 * Math.sqrt(radius * radius - dy * dy) * widthFactor : width * 0.5;
             }
             rowWidths.add(rowWidth.toNumber());
         }
 
-        _pages = layoutPages(dc, _text, rowWidths);
-        if (_page >= _pages.size()) {
-            _page = 0;
+        return {:pages => splitIntoPages(dc, _text, rowWidths), :lineHeight => lineHeight, :bodyTop => bodyTop};
+    }
+
+    function onShow() as Void {
+        _backlightElapsedMs = 0;
+        keepBacklightOn();
+        if (_backlightTimer == null) {
+            _backlightTimer = new Timer.Timer();
+        }
+        stopBacklightTimer();
+        (_backlightTimer as Timer.Timer).start(method(:keepBacklightOn), BACKLIGHT_REFRESH_MS, true);
+    }
+
+    function onHide() as Void {
+        stopBacklightTimer();
+    }
+
+    //! Public: called by the timer
+    function keepBacklightOn() as Void {
+        if (_backlightElapsedMs >= BACKLIGHT_MAX_MS || !(Attention has :backlight)) {
+            stopBacklightTimer();
+            return;
+        }
+        _backlightElapsedMs += BACKLIGHT_REFRESH_MS;
+        try {
+            Attention.backlight(true);
+        } catch (ex) {
+            // Devices with burn-in protection refuse to hold the display on for long
+            stopBacklightTimer();
+        }
+    }
+
+    private function stopBacklightTimer() as Void {
+        if (_backlightTimer != null) {
+            (_backlightTimer as Timer.Timer).stop();
         }
     }
 
@@ -105,7 +187,7 @@ class PrayerTextView extends WatchUi.View {
         dc.drawText(centerX, _titleY, TITLE_FONT, _title, Graphics.TEXT_JUSTIFY_CENTER);
 
         // Rule under the title, or an up arrow when there are previous pages
-        var markY = _bodyTop - 5;
+        var markY = _titleBottom + 3;
         if (_page > 0) {
             drawTriangle(dc, centerX, markY, true);
         } else {
@@ -128,6 +210,15 @@ class PrayerTextView extends WatchUi.View {
             var hint = WatchUi.loadResource(Rez.Strings.hint_continue) as String;
             dc.drawText(centerX, _hintY, HINT_FONT, hint, Graphics.TEXT_JUSTIFY_CENTER);
         }
+    }
+
+    //! Number of lines on each page (used by the tests)
+    function getPageSizes() as Array<Number> {
+        var sizes = [] as Array<Number>;
+        for (var i = 0; i < _pages.size(); i++) {
+            sizes.add(_pages[i].size());
+        }
+        return sizes;
     }
 
     private function canScrollDown() as Boolean {
@@ -154,7 +245,7 @@ class PrayerTextView extends WatchUi.View {
 
     //! One source line = one phrase, starting a new row; phrases that do not fit the row
     //! are wrapped at spaces. Rows fill a page, then continue on the next one.
-    private function layoutPages(dc as Dc, text as String, rowWidths as Array<Number>) as Array<Array<String> > {
+    private function splitIntoPages(dc as Dc, text as String, rowWidths as Array<Number>) as Array<Array<String> > {
         var pages = [] as Array<Array<String> >;
         var page = [] as Array<String>;
         var paragraphs = split(text, "\n");
@@ -216,7 +307,7 @@ class PrayerTextView extends WatchUi.View {
     }
 
     private function drawTriangle(dc as Dc, x as Number, centerY as Number, pointingUp as Boolean) as Void {
-        var halfSize = 5;
+        var halfSize = 4;
         var baseY = centerY + (pointingUp ? halfSize : -halfSize);
         var tipY = centerY + (pointingUp ? -halfSize : halfSize);
         dc.fillPolygon([[x - halfSize, baseY], [x + halfSize, baseY], [x, tipY]]);

@@ -89,8 +89,12 @@ class GarminRosaryDelegate extends WatchUi.BehaviorDelegate {
         } else if (direction == WatchUi.SWIPE_DOWN) {
             goBack();
             return true;
+        } else if (direction == WatchUi.SWIPE_LEFT) {
+            // FORK: skip the Hail Marys, on to the next Our Father
+            stepForward(true);
+            return true;
         }
-        
+
         return false;
     }
 
@@ -121,9 +125,14 @@ class GarminRosaryDelegate extends WatchUi.BehaviorDelegate {
     //! Avance d'un grain avec vibration appropriée
     //! FORK: public, called back by PrayerTextDelegate
     function advanceBead() as Void {
+        stepForward(false);
+    }
+
+    //! FORK: one step forward, or (skip) on to the next Our Father
+    private function stepForward(skip as Boolean) as Void {
         var previousPhase = _model.phase;
-        
-        var state = _model.next();
+
+        var state = skip ? _model.skipToNextOurFather() : _model.next();
         
         _view.setCurrentState(state);
         

@@ -18,6 +18,15 @@ https://apps.garmin.com/en-US/apps/c7a5d79f-b3ab-45fb-a62e-5e59af395d9c
   (swipe up or hold START on the main screen reopens it).
   Texts are in `resources-fork/strings/strings.xml`, one phrase per line, taken from
   [pastorace.cz](https://www.pastorace.cz/tematicke-texty/modlitba-ruzence-krok-za-krokem).
+- **Backlight stays on while a long prayer text is shown** (`Attention.backlight`, refreshed every 2 s,
+  for at most 3 minutes; devices that refuse to hold the display on, such as AMOLED ones with burn-in
+  protection, simply stop the refresh).
+- **No unnecessary last scroll.** If a prayer text would end with a page of only one or two lines, the
+  layout is retried with slightly wider rows and tighter line spacing (see `PrayerTextView.onLayout`).
+- **Swipe left skips to the next Our Father** (`RosaryModel.skipToNextOurFather`): the remaining Hail Marys
+  are skipped, for praying them without counting. It stops at the Salve Regina, the closing prayer and
+  the mystery transition of the full rosary. The in-app help (`help_text` in `resources-fork`) mentions it.
+  There is no button gesture yet: hold DOWN was left out because it could not be tested without the buttons.
 - **Zdrávas Královno and Modleme se are actually prayed.** Upstream defines `STATE_SALVE` but goes
   from the last Sláva Otci straight to "complete"; the fork inserts both before the end.
 - **Own app id** in `manifest.xml`, so the fork does not collide with the store app.
@@ -66,3 +75,5 @@ Expected conflicts:
 - If upstream commits the real `DeviceProfile` / `Palette` / `RosaryConstants`, the build reports
   duplicate definitions: delete `source/fork/UpstreamShims.mc`.
 - `manifest.xml` language list: keep `ces` only.
+- `help_text` in `resources-fork/strings/strings.xml` repeats upstream's Czech help plus the swipe-left
+  line: if upstream changes its help, merge the change by hand.
