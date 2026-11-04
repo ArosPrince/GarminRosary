@@ -26,6 +26,7 @@ Modlitba růžence v češtině přímo na hodinkách – bez telefonu a bez roz
 • Postup se ukládá, můžete pokračovat tam, kde jste skončili.
 • Režim celého růžence (20 desátků) a krátká rozjímání ke každému tajemství.
 • Přejetím doleva přeskočíte zbývající Zdrávasy a přejdete rovnou na další Otče náš – když Zdrávasy počítáte jinak.
+• Za Sláva Otci každého desátku se zobrazí fatimská modlitba „Pane Ježíši“ – bez dalšího klepnutí.
 
 Ovládání: klepnutí / START = další modlitba, přejetí dolů = zpět, přejetí doleva = přeskočit na další Otče náš, přejetí nahoru nebo podržení START = celý text / rozjímání, MENU = možnosti.
 
@@ -44,6 +45,7 @@ Pray the rosary in Czech on your watch – no phone, no distractions.
 • Progress is saved; continue where you left off.
 • Full rosary mode (20 decades) and a short meditation for each mystery.
 • Swipe left to skip the remaining Hail Marys and go straight to the next Our Father – for when you count them by other means.
+• The Fatima prayer ("Pane Ježíši") is shown under the Glory Be of every decade – no extra tap.
 
 All texts in the app are in Czech.
 
