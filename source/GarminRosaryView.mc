@@ -434,8 +434,16 @@ class GarminRosaryView extends WatchUi.View {
         if (_currentState == RosaryModel.STATE_HAIL_MARY) { typeText = WatchUi.loadResource(Rez.Strings.prayer_ave) as String; }
         else if (_currentState == RosaryModel.STATE_OUR_FATHER) { typeText = WatchUi.loadResource(Rez.Strings.prayer_pater) as String; }
         else if (_currentState == RosaryModel.STATE_GLORY) { typeText = WatchUi.loadResource(Rez.Strings.prayer_gloria) as String; }
-        
-        if (beadNum > 0) { 
+
+        // FORK: the Fatima prayer follows the Glory Be of every decade (not the introduction's).
+        // Same step, no extra press: its name goes under "Sláva Otci", in the line where the
+        // Hail Mary screens name their prayer, so it fits wherever that line already fits.
+        var showFatima = (_currentState == RosaryModel.STATE_GLORY && _model.phase >= 1 && _model.phase <= 5);
+        if (showFatima) {
+            typeText = WatchUi.loadResource(Rez.Strings.prayer_fatima) as String;
+        }
+
+        if (beadNum > 0 || showFatima) { // FORK: also the Fatima prayer's name
              var typeTextY = centerY * 1.62;
              
              if (_isRectangular) {

@@ -27,6 +27,12 @@ https://apps.garmin.com/en-US/apps/c7a5d79f-b3ab-45fb-a62e-5e59af395d9c
   are skipped, for praying them without counting. It stops at the Salve Regina, the closing prayer and
   the mystery transition of the full rosary. The in-app help (`help_text` in `resources-fork`) mentions it.
   There is no button gesture yet: hold DOWN was left out because it could not be tested without the buttons.
+- **Fatima prayer after the Glory Be of every decade** (not after the one in the introduction). It is
+  part of the same step, so bead counts, progress and the number of presses are unchanged: the decade's
+  Glory Be screen shows "Pane Ježíši" under "Sláva Otci", in the line where the Hail Mary screens name
+  their prayer (`GarminRosaryView.drawDecadeScreen`). Name only, like the other short prayers; the full
+  text is in `prayer_fatima_text` but not shown, because hold / swipe up on that screen opens the
+  decade's meditation.
 - **Zdrávas Královno and Modleme se are actually prayed.** Upstream defines `STATE_SALVE` but goes
   from the last Sláva Otci straight to "complete"; the fork inserts both before the end.
 - **Own app id** in `manifest.xml`, so the fork does not collide with the store app.

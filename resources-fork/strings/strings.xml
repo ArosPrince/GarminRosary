@@ -53,6 +53,12 @@ Dej nám, prosíme, když v posvátném růženci blahoslavené Panny Marie o t�
 Skrze Krista, našeho Pána.
 Amen.</string>
 
+    <!-- Fatima prayer, prayed after the Glory Be of every decade. The decade's Glory Be screen
+         shows its name only, like the other short prayers; the full text is not shown yet (the
+         hold / swipe-up gesture on that screen opens the decade's meditation). -->
+    <string id="prayer_fatima">Pane Ježíši</string>
+    <string id="prayer_fatima_text">Pane Ježíši, odpusť nám naše hříchy, uchraň nás pekelného ohně a přiveď do nebe všechny duše, zvláště ty, které tvého milosrdenství nejvíce potřebují.</string>
+
     <string id="hint_continue">Klepnutím dál</string>
 
     <!-- Same as upstream's Czech help, plus the swipe-left gesture -->
