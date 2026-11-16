@@ -126,6 +126,7 @@
         -->
         <iq:languages>
             <iq:language>ces</iq:language>
+            <iq:language>slo</iq:language>
         </iq:languages>
         <!--
             Use "Monkey C: Configure Monkey Barrel" from the Visual Studio Code

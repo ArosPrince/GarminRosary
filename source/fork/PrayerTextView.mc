@@ -31,6 +31,7 @@ class PrayerTextView extends WatchUi.View {
     private var _page as Number = 0;
     private var _lineHeight as Number = 20;
 
+    private var _titleFont as FontType = TITLE_FONT;
     private var _titleY as Number = 0;
     private var _titleBottom as Number = 0;
     private var _bodyTop as Number = 0;
@@ -78,7 +79,17 @@ class PrayerTextView extends WatchUi.View {
         }
 
         _titleY = isRound ? (height * 0.07).toNumber() : 4;
-        _titleBottom = _titleY + dc.getFontHeight(TITLE_FONT);
+        // A title wider than the round screen at its height (the Slovak "Zdravas’, Kráľovná" on
+        // small round watches) is cut at the edge: it gets the body font instead.
+        _titleFont = TITLE_FONT;
+        if (isRound) {
+            var dy = height / 2.0 - (_titleY + dc.getFontHeight(TITLE_FONT) / 2.0);
+            var room = (dy < width / 2.0) ? 2 * Math.sqrt(width * width / 4.0 - dy * dy) : 0;
+            if (dc.getTextWidthInPixels(_title, TITLE_FONT) > room) {
+                _titleFont = BODY_FONT;
+            }
+        }
+        _titleBottom = _titleY + dc.getFontHeight(_titleFont);
         _hintY = height - (isRound ? (height * 0.05).toNumber() : 2) - dc.getFontHeight(HINT_FONT);
 
         // Settings tried in order: [line spacing reduction (px), row width factor, gap under the title (px)].
@@ -184,7 +195,7 @@ class PrayerTextView extends WatchUi.View {
         dc.clear();
 
         dc.setColor(_colorGold, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(centerX, _titleY, TITLE_FONT, _title, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(centerX, _titleY, _titleFont, _title, Graphics.TEXT_JUSTIFY_CENTER);
 
         // Rule under the title, or an up arrow when there are previous pages
         var markY = _titleBottom + 3;

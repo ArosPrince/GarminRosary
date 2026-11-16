@@ -30,15 +30,41 @@ Modlitba růžence v češtině přímo na hodinkách – bez telefonu a bez roz
 
 Ovládání: klepnutí / START = další modlitba, přejetí dolů = zpět, přejetí doleva = přeskočit na další Otče náš, přejetí nahoru nebo podržení START = celý text / rozjímání, MENU = možnosti.
 
+Na hodinkách nastavených na slovenštinu je aplikace slovensky.
+
 Aplikace vychází z otevřeného projektu GarminRosary (DevMc120) a je šířena pod licencí GPL-3.0. Zdrojový kód: https://github.com/ArosPrince/GarminRosary
 Texty modliteb: pastorace.cz.
 
+## Názov / Popis (slovenčina)
+
+Translated from the Czech text; have the Slovak reviewer check it. Name, if the portal accepts a
+Slovak title: Ruženec
+
+Modlitba ruženca po slovensky priamo na hodinkách – bez telefónu a bez rozptyľovania.
+
+• Tajomstvá dňa sa vyberajú automaticky podľa dňa v týždni (radostný, bolestný, slávnostný ruženec, ruženec svetla). Stačí spustiť a ťuknutím začať.
+• Slovenské znenie tajomstiev tak, ako sa vkladajú do Zdravas, Mária („ktorého si, Panna, z Ducha Svätého počala“ …), a prosby úvodných Zdravasov podľa ruženca.
+• Celé texty dlhších modlitieb – Verím v Boha, Zdravas, Kráľovná a Modlime sa – sa zobrazia samy, s posúvaním po stránkach. Netreba ich vedieť naspamäť. Pri čítaní zostáva podsvietenie zapnuté, takže sa dajú dočítať aj v noci.
+• Kruhový ukazovateľ postupu a čísla zrniek v desiatku.
+• Rozdielne vibrácie pre zrnká, desiatky a koniec – dá sa modliť aj so zavretými očami.
+• Postup sa ukladá, môžete pokračovať tam, kde ste skončili.
+• Režim celého ruženca (20 desiatkov) a krátke rozjímania ku každému tajomstvu.
+• Potiahnutím doľava preskočíte zostávajúce Zdravasy a prejdete rovno na ďalší Otče náš – keď Zdravasy počítate inak.
+• Za Sláva Otcu každého desiatku sa zobrazí fatimská modlitba „Ó, Ježišu“ – bez ďalšieho ťuknutia.
+
+Ovládanie: ťuknutie / START = ďalšia modlitba, potiahnutie nadol = späť, potiahnutie doľava = preskočiť na ďalší Otče náš, potiahnutie nahor alebo podržanie START = celý text / rozjímanie, MENU = možnosti.
+
+Aplikácia je slovensky na hodinkách nastavených na slovenčinu, inak česky.
+
+Aplikácia vychádza z otvoreného projektu GarminRosary (DevMc120) a je šírená pod licenciou GPL-3.0. Zdrojový kód: https://github.com/ArosPrince/GarminRosary
+Texty modlitieb: Jednotný katolícky spevník, Liturgia hodín, Dominikáni na Slovensku.
+
 ## Description (English)
 
-Pray the rosary in Czech on your watch – no phone, no distractions.
+Pray the rosary in Czech or Slovak on your watch – no phone, no distractions.
 
 • The mysteries of the day are picked automatically from the day of the week. Start the app and tap to begin.
-• Czech mystery wordings as inserted into the Hail Mary, regardless of the watch language.
+• Czech mystery wordings as inserted into the Hail Mary, regardless of the watch language; Slovak ones on watches set to Slovak.
 • Full texts of the longer prayers – the Creed, Hail Holy Queen and the closing prayer (Modleme se) – open automatically, page by page. The backlight stays on while you read them, so they can be read to the end at night.
 • Circular progress ring and bead counter.
 • Distinct vibrations for beads, decades and the end, so you can pray with your eyes closed.
@@ -47,7 +73,7 @@ Pray the rosary in Czech on your watch – no phone, no distractions.
 • Swipe left to skip the remaining Hail Marys and go straight to the next Our Father – for when you count them by other means.
 • The Fatima prayer ("Pane Ježíši") is shown under the Glory Be of every decade – no extra tap.
 
-All texts in the app are in Czech.
+All texts in the app are in Slovak on watches set to Slovak, and in Czech on every other watch language.
 
 Based on the open-source GarminRosary project by DevMc120, licensed under GPL-3.0. Source code: https://github.com/ArosPrince/GarminRosary
 

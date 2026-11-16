@@ -233,12 +233,11 @@ class GarminRosaryView extends WatchUi.View {
 
         dc.setColor(_colorTextDim, Graphics.COLOR_TRANSPARENT);
         var introText = "";
-        if (_model.beadInPhase == 4) {
-            introText = WatchUi.loadResource(Rez.Strings.intro_faith) as String;
-        } else if (_model.beadInPhase == 5) {
-            introText = WatchUi.loadResource(Rez.Strings.intro_hope) as String;
-        } else if (_model.beadInPhase == 6) {
-            introText = WatchUi.loadResource(Rez.Strings.intro_charity) as String;
+        // FORK: the petition of the three introductory Hail Marys depends on the set of
+        // mysteries (Slovak: joyful = faith/hope/love, luminous, sorrowful and glorious have
+        // their own). The Czech strings repeat faith/hope/love for every set.
+        if (_model.beadInPhase >= 4 && _model.beadInPhase <= 6) {
+            introText = WatchUi.loadResource(getIntroPetition(_model.beadInPhase - 4)) as String;
         } else if (_model.beadInPhase <= 3) {
             introText = WatchUi.loadResource(Rez.Strings.text_intro) as String;
         }
@@ -255,6 +254,40 @@ class GarminRosaryView extends WatchUi.View {
                 Graphics.TEXT_JUSTIFY_CENTER);
         }
     }
+    //! FORK: petition of the introductory Hail Mary number index (0..2) for the current set.
+    private function getIntroPetition(index as Number) as ResourceId {
+        var ids = [Rez.Strings.intro_faith, Rez.Strings.intro_hope, Rez.Strings.intro_charity] as Array<ResourceId>;
+        if (_model.mysteryType == RosaryModel.MYSTERY_LUMINOUS) {
+            ids = [Rez.Strings.intro_luminous_1, Rez.Strings.intro_luminous_2, Rez.Strings.intro_luminous_3] as Array<ResourceId>;
+        } else if (_model.mysteryType == RosaryModel.MYSTERY_SORROWFUL) {
+            ids = [Rez.Strings.intro_sorrowful_1, Rez.Strings.intro_sorrowful_2, Rez.Strings.intro_sorrowful_3] as Array<ResourceId>;
+        } else if (_model.mysteryType == RosaryModel.MYSTERY_GLORIOUS) {
+            ids = [Rez.Strings.intro_glorious_1, Rez.Strings.intro_glorious_2, Rez.Strings.intro_glorious_3] as Array<ResourceId>;
+        }
+        return ids[index];
+    }
+
+    //! FORK: width of the second title line on the Instinct 2 (the split drawDecadeScreen uses).
+    private function getInstinctSecondLineWidth(dc as Dc, text as String, font as FontType, safeWidth as Numeric) as Number {
+        var words = stringSplit(text, " ");
+        var line1 = "";
+        var i = 0;
+        while (i < words.size()) {
+            var testLine = (line1.length() == 0) ? words[i] : line1 + " " + words[i];
+            if (dc.getTextWidthInPixels(testLine, font) > safeWidth) {
+                break;
+            }
+            line1 = testLine;
+            i++;
+        }
+        var line2 = "";
+        while (i < words.size()) {
+            line2 = (line2.length() == 0) ? words[i] : line2 + " " + words[i];
+            i++;
+        }
+        return dc.getTextWidthInPixels(line2, font);
+    }
+
     //! Écran Dizaine
     private function drawDecadeScreen(dc as Dc, centerX as Number, centerY as Number) as Void {
         dc.setColor(_colorGold, Graphics.COLOR_TRANSPARENT);
@@ -280,7 +313,11 @@ class GarminRosaryView extends WatchUi.View {
             
             if (_isRectangular) {
                 var combinedText = decadeNum.toString() + " - " + mysteryTitle;
-                titleY = (_screenHeight * 0.18).toNumber(); 
+                titleY = (_screenHeight * 0.18).toNumber();
+                // FORK: more than three lines run off the top of the screen: use the short title.
+                if (getWrappedLines(dc, titleY, Graphics.FONT_SYSTEM_XTINY, combinedText).size() > 3) {
+                    combinedText = decadeNum.toString() + " - " + _model.getCurrentMysteryShortTitle();
+                }
                 titleHeight = drawWrappedText(dc, centerX, titleY, Graphics.FONT_SYSTEM_XTINY, 
                     combinedText, 
                     Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
@@ -294,7 +331,14 @@ class GarminRosaryView extends WatchUi.View {
                 
                 var fontToUse = Graphics.FONT_XTINY;
                 var textWidth = dc.getTextWidthInPixels(combinedText, fontToUse);
-                
+
+                // FORK: the second line has no width limit and ran off the screen with long titles:
+                // use the short title then.
+                if (textWidth > safeWidth && getInstinctSecondLineWidth(dc, combinedText, fontToUse, safeWidth) > _screenWidth * 0.80) {
+                    combinedText = decadeNum.toString() + " - " + _model.getCurrentMysteryShortTitle();
+                    textWidth = dc.getTextWidthInPixels(combinedText, fontToUse);
+                }
+
                 if (textWidth <= safeWidth) {
                     titleY = (centerY * 0.70).toNumber(); 
                     titleHeight = dc.getFontHeight(fontToUse);
@@ -342,7 +386,18 @@ class GarminRosaryView extends WatchUi.View {
                     }
                 }
             } else {
-                var maxWidth = (centerX * 1.6).toNumber(); 
+                // FORK: a title of three lines runs into the decade number and the round edge
+                // (long Slovak titles): use the smaller font, and if that is not enough the short title.
+                var wrapY = (centerY * 0.48).toNumber();
+                if (getWrappedLines(dc, wrapY, titleFont, mysteryTitle).size() > 2) {
+                    if (titleFont != Graphics.FONT_XTINY && getWrappedLines(dc, wrapY, Graphics.FONT_XTINY, mysteryTitle).size() <= 2) {
+                        titleFont = Graphics.FONT_XTINY;
+                    } else {
+                        mysteryTitle = _model.getCurrentMysteryShortTitle();
+                    }
+                }
+
+                var maxWidth = (centerX * 1.6).toNumber();
                 var textWidth = dc.getTextWidthInPixels(mysteryTitle, titleFont);
                 var willWrap = textWidth > maxWidth;
                 
@@ -519,6 +574,21 @@ class GarminRosaryView extends WatchUi.View {
     }
 
     private function drawWrappedText(dc as Dc, x as Number, y as Number, font as FontType, text as String, attr as Number) as Number {
+        // FORK: the line breaking moved to getWrappedLines, so titles can be measured first.
+        var lines = getWrappedLines(dc, y, font, text);
+        var fontHeight = dc.getFontHeight(font);
+        var totalHeight = lines.size() * fontHeight;
+        var startY = y - (totalHeight / 2) + (fontHeight / 2);
+
+        for (var i = 0; i < lines.size(); i++) {
+            dc.drawText(x, startY + (i * fontHeight), font, lines[i], attr);
+        }
+
+        return totalHeight;
+    }
+
+    //! FORK: lines drawWrappedText would draw text in, centred at y (upstream's code).
+    private function getWrappedLines(dc as Dc, y as Number, font as FontType, text as String) as Array<String> {
         var width = dc.getWidth();
         var height = dc.getHeight();
         var radius = width / 2;
@@ -538,8 +608,7 @@ class GarminRosaryView extends WatchUi.View {
         } 
         
         if (dc.getTextWidthInPixels(text, font) <= maxWidth) {
-            dc.drawText(x, y, font, text, attr);
-            return dc.getFontHeight(font);
+            return [text] as Array<String>;
         }
 
         var words = stringSplit(text, " ");
@@ -571,15 +640,7 @@ class GarminRosaryView extends WatchUi.View {
              lines = getGreedyLines(dc, font, words, maxWidth);
         }
 
-        var fontHeight = dc.getFontHeight(font);
-        var totalHeight = lines.size() * fontHeight;
-        var startY = y - (totalHeight / 2) + (fontHeight / 2);
-
-        for (var i = 0; i < lines.size(); i++) {
-            dc.drawText(x, startY + (i * fontHeight), font, lines[i], attr);
-        }
-        
-        return totalHeight;
+        return lines;
     }
     
     private function getGreedyLines(dc as Dc, font as FontType, words as Array<String>, maxWidth as Float) as Array<String> {

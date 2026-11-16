@@ -7,11 +7,28 @@ https://apps.garmin.com/en-US/apps/c7a5d79f-b3ab-45fb-a62e-5e59af395d9c
 
 ## What differs from upstream
 
-- **Czech regardless of the watch language.** `monkey.jungle` appends `resources-ces` (and the
-  fork strings) to the default resource path; later paths win, so all mysteries, prayers and menus
-  are Czech even on an English watch. No upstream string file is edited. The manifest lists Czech
-  as the only language, so the store shows Czech, and device variants without Czech firmware
-  (Asia-Pacific editions) are not built.
+- **Czech regardless of the watch language, Slovak on Slovak watches.** `monkey.jungle` appends
+  `resources-ces` (and the fork strings) to the default resource path; later paths win, so all
+  mysteries, prayers and menus are Czech even on an English watch. No upstream string file is
+  edited. A watch set to Slovak gets `resources-slo` instead (`base.lang.slo`), which holds every
+  string id of `resources-ces` and `resources-fork`; a missing id would quietly show Czech. The
+  manifest lists Czech and Slovak only, so device variants without that firmware (Asia-Pacific
+  editions) are not built.
+- **Slovak texts** (`resources-slo/strings/strings.xml`, sources in its header): Creed from the
+  Jednotný katolícky spevník, Salve Regina from the Slovak Liturgy of the Hours, mysteries and intro
+  petitions as published with the KBS wording, the closing prayer from the Slovak Dominicans'
+  collect for Our Lady of the Rosary, Bible quotations from the SSV 1996 translation. Meditations,
+  menus, help and the fruits of the mysteries are translated and need a Slovak proofreader. The main
+  screen shows the KBS-approved (2003) short luminous mysteries, the meditation view the full ones.
+- **Intro petitions per set of mysteries.** The three introductory Hail Marys show the petition of
+  the current set (`GarminRosaryView.getIntroPetition`, strings `intro_<set>_1..3`). Slovak has a
+  different trio for each set; the Czech strings repeat Víra / Naděje / Láska.
+- **Long mystery titles fit the decade screen.** A title that would take three lines on a round
+  screen gets the smaller font, then the `_title_short` variant
+  (`RosaryModel.getCurrentMysteryShortTitle`); likewise more than three lines on rectangular screens
+  and a second line too wide on the Instinct 2. Upstream's `drawWrappedText` line breaking moved to
+  `getWrappedLines` for this. The prayer text view drops to the body font when its title is wider
+  than a round screen.
 - **Full texts of the long prayers.** Věřím v Boha, Zdrávas Královno and Modleme se open
   automatically as a paged text (`source/fork/PrayerTextView.mc`). DOWN / swipe up = next page,
   UP / swipe down = previous page, START / tap = continue with the next prayer, BACK = close only
@@ -80,6 +97,12 @@ Expected conflicts:
   take upstream's version.
 - If upstream commits the real `DeviceProfile` / `Palette` / `RosaryConstants`, the build reports
   duplicate definitions: delete `source/fork/UpstreamShims.mc`.
-- `manifest.xml` language list: keep `ces` only.
+- `manifest.xml` language list: keep `ces` and `slo` only.
 - `help_text` in `resources-fork/strings/strings.xml` repeats upstream's Czech help plus the swipe-left
-  line: if upstream changes its help, merge the change by hand.
+  line: if upstream changes its help, merge the change by hand (and into `resources-slo`).
+- New string ids upstream (in `resources-ces`) must also be added to `resources-slo`, or Slovak
+  watches show them in Czech. Compare the id lists of both files after each merge.
+- `GarminRosaryView.drawWrappedText`: its body moved to `getWrappedLines`; apply upstream changes there.
+
+Slovak tests: build with a throwaway jungle (outside the repo) whose `base.resourcePath` ends with
+`resources-slo`, so the simulator shows Slovak whatever its language setting.

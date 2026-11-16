@@ -6,3 +6,6 @@ project.manifest = manifest.xml
 # upstream translations are not built (the compiler warns that they are ignored).
 base.resourcePath = $(base.resourcePath);resources-ces;resources-fork
 base.lang.ces = $(base.lang.ces);resources-fork
+# FORK: Slovak watches get Slovak. resources-slo holds every string (upstream's and the fork's),
+# so it does not need resources-fork after it; all other watch languages stay Czech.
+base.lang.slo = resources-slo

@@ -59,6 +59,19 @@ Amen.</string>
     <string id="prayer_fatima">Pane Ježíši</string>
     <string id="prayer_fatima_text">Pane Ježíši, odpusť nám naše hříchy, uchraň nás pekelného ohně a přiveď do nebe všechny duše, zvláště ty, které tvého milosrdenství nejvíce potřebují.</string>
 
+    <!-- Petitions of the three introductory Hail Marys per set of mysteries (see
+         GarminRosaryView.getIntroPetition). Czech prays faith/hope/love with every set; the joyful
+         set uses upstream's intro_faith / intro_hope / intro_charity. Slovak differs per set. -->
+    <string id="intro_luminous_1">Víra</string>
+    <string id="intro_luminous_2">Naděje</string>
+    <string id="intro_luminous_3">Láska</string>
+    <string id="intro_sorrowful_1">Víra</string>
+    <string id="intro_sorrowful_2">Naděje</string>
+    <string id="intro_sorrowful_3">Láska</string>
+    <string id="intro_glorious_1">Víra</string>
+    <string id="intro_glorious_2">Naděje</string>
+    <string id="intro_glorious_3">Láska</string>
+
     <string id="hint_continue">Klepnutím dál</string>
 
     <!-- Same as upstream's Czech help, plus the swipe-left gesture -->

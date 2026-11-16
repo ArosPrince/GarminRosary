@@ -315,7 +315,30 @@ class RosaryModel {
         }
         return "";
     }
-    
+
+    //! FORK: short form of the current decade's mystery (the `_title_short` strings), for decade
+    //! screens where the full title does not fit (long Slovak titles). Outside the decades it is
+    //! the same as getCurrentMysteryTitle().
+    function getCurrentMysteryShortTitle() as String {
+        if (phase < 1 || phase > 5) {
+            return getCurrentMysteryTitle();
+        }
+        var ids = null;
+        if (mysteryType == MYSTERY_JOYFUL) {
+            ids = [Rez.Strings.joyful_1_title_short, Rez.Strings.joyful_2_title_short, Rez.Strings.joyful_3_title_short, Rez.Strings.joyful_4_title_short, Rez.Strings.joyful_5_title_short];
+        } else if (mysteryType == MYSTERY_SORROWFUL) {
+            ids = [Rez.Strings.sorrowful_1_title_short, Rez.Strings.sorrowful_2_title_short, Rez.Strings.sorrowful_3_title_short, Rez.Strings.sorrowful_4_title_short, Rez.Strings.sorrowful_5_title_short];
+        } else if (mysteryType == MYSTERY_GLORIOUS) {
+            ids = [Rez.Strings.glorious_1_title_short, Rez.Strings.glorious_2_title_short, Rez.Strings.glorious_3_title_short, Rez.Strings.glorious_4_title_short, Rez.Strings.glorious_5_title_short];
+        } else if (mysteryType == MYSTERY_LUMINOUS) {
+            ids = [Rez.Strings.luminous_1_title_short, Rez.Strings.luminous_2_title_short, Rez.Strings.luminous_3_title_short, Rez.Strings.luminous_4_title_short, Rez.Strings.luminous_5_title_short];
+        }
+        if (ids == null) {
+            return getCurrentMysteryTitle();
+        }
+        return WatchUi.loadResource((ids as Array<ResourceId>)[phase - 1]) as String;
+    }
+
     function getMysteryKey(type as Number) as String or Null {
         switch (type) {
             case MYSTERY_JOYFUL: return "joyful";
